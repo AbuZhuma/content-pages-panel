@@ -1,4 +1,6 @@
 export interface MetaBlockTypes {
     title: string, 
-    description: string
+    description: string,
+    slug: string, 
+    category: string
 }

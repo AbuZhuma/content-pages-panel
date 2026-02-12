@@ -3,13 +3,22 @@ import PeopleIcon from "@mui/icons-material/People";
 
 export const menu = [
   {
-    label: "Главный",
+    label: "Главное",
     path: "/",  
     icon: DashboardIcon,
   },
   {
     label: "Создание страниц",
-    path: "/users",
+    path: "/content-pages",
     icon: PeopleIcon,
   }
-];
+]
+
+export type MenuMapKeys = 
+  | "/"
+  | "/content-pages"
+
+export const menuMap: Record<MenuMapKeys, { label: string }> = {
+  "/": { label: "Главное" },
+  "/content-pages": { label: "Создание страниц" },
+};

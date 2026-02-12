@@ -1,0 +1,1 @@
+export type ParsetStylesType = Record<string, string>

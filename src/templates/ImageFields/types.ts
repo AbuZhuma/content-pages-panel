@@ -2,10 +2,8 @@ import type { BaseContentDataTemplate, BaseContentTemplate } from "../../types/c
 
 export type ImageContentType = BaseContentTemplate & {
     type: "IMAGE", 
-    data: {
-        source: BaseContentDataTemplate & {
-            alt: string
-        },
+    data: BaseContentDataTemplate & {
+        source: string,
         imageKey: string
     }
 }

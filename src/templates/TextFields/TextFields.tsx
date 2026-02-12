@@ -1,31 +1,46 @@
-import { FieldBlockLayout } from "../../shared/ui/FieldBlockLayout"
-import { FieldLayout } from "../../shared/ui/FieldLayout"
-import { useState } from "react"
-import type { ContentType } from "../../types/content.types"
+import { useState, type FC } from "react"
+import { FieldBlockLayout } from "../../widgets/FieldBlockLayout"
+import { FieldLayout } from "../../widgets/FieldLayout"
+import type { FieldBlockProps } from "../../types/fieldBlockProps"
 import { useFormStore } from "../../shared/store/useFormStore"
+import type { TextContentTypes } from "../TextFields"
+import { buildSaveBlockFunc } from "../../shared/utils"
 
-export const TextFields = () => {
-  const [value, setValue] = useState("")
-  const addBlock = useFormStore((state) => state.addBlock)
+export const TextFields: FC<FieldBlockProps> = ({ id }) => {
+  const block = useFormStore(
+    (s) => s.getBlockById(id) as TextContentTypes
+  )
 
-  const handleSave = () => {
-    if (value.trim() === "") return
-    const opt: ContentType = {
-      type: "TEXT", data: {
+  const [value, setValue] = useState(block.data.text.text ?? "")
+
+  const updateBlock = useFormStore((s) => s.updateBlock)
+  const handleSave = ({ styles }: { styles: string }) => {
+    buildSaveBlockFunc({
+      block,
+      id,
+      styles,
+      updateBlock,
+      buildData: ({ trimmed, parsed }) => ({
         text: {
           text: value,
-        }
-      }
-    }
-    addBlock(opt)
+          ...(trimmed && parsed.text && { styles: parsed.text }),
+        },
+      }),
+    })
   }
 
-
   return (
-    <FieldBlockLayout title="Текст" onSave={handleSave}>
+    <FieldBlockLayout
+      title="Текст"
+      key={id}
+      id={id}
+      onSave={handleSave}
+      states={[value]}
+    >
       <FieldLayout
         label="Введите текст"
-        width={500}
+        multiline
+        width={900}
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />

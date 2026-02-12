@@ -1,50 +1,52 @@
 import { Button, Divider, Stack } from '@mui/material'
 import { MetaFields } from '../../templates/MetaFields'
-import TitleFields from '../../templates/TitleFields/TitleFields'
-import ImageFields from '../../templates/ImageFields/ImageFields'
-import { DropdownFields } from '../../templates/DropdownFields'
-import { TextFields } from '../../templates/TextFields'
 import { useFormStore } from '../../shared/store/useFormStore'
+import type { ContentDataType } from '../../types/content.types'
+import { templatesMap } from '../../shared/configs/templates.config'
+import { BLOCK_TEMPLATES } from '../../const/blockTemplates'
+import { uuid } from '../../shared/utils/uuid'
+import { createPage } from '../../services/createPage'
+import { buildCreatePageFormData } from '../../shared/utils/buildCreatePageFormData'
+import { useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { AddTemplate } from '../../widgets/AddTemplate'
 
 export const CreateForm = () => {
-  const {blocks, images} = useFormStore()
+  const { blocks, images, metaData, addBlock, clearForm } = useFormStore()
+  const navigate = useNavigate()
+
+  const onSuccess = useCallback(() => {
+    clearForm()
+    navigate("/")
+  }, [clearForm, navigate])
 
   const onSubmit = () => {
-    const formData = new FormData()
-
-    formData.append(
-      "data",
-      JSON.stringify({
-        slug: "about-with-image",
-        category: "FOOTER",
-        meta: {
-          title: "О компании",
-          description: "Описание",
-        },
-        content: blocks.map(block => {
-          if (block.type !== "IMAGE") return block
-          const { imageKey, ...rest } = block.data
-          return {
-            ...block,
-            data: rest,
-          }
-        }),
-      })
-    )
-
-    Object.values(images).forEach((file) => {
-      formData.append("images", file)
+    const formData = buildCreatePageFormData({
+      blocks,
+      images,
+      metaData,
     })
-    console.log(blocks, images);
+
+    createPage({ data: formData, onSuccess })
   }
+
+
+  const onAdd = (type: ContentDataType) => {
+    const id = uuid()
+    addBlock({ ...BLOCK_TEMPLATES[type], id: id })
+  }
+
   return (
     <Stack spacing={2} divider={<Divider orientation="horizontal" flexItem />}>
       <MetaFields />
-      <TitleFields />
-      <ImageFields />
-      <DropdownFields />
-      <TextFields />
-      <Button variant="contained" onClick={onSubmit}>Создать</Button>
+      {blocks.map((el) => {
+        const Component = templatesMap[el.type].component
+        return <Component key={el.id} id={el.id} />
+      })}
+      <Stack direction="row" spacing={3}>
+        <Button variant="contained" onClick={onSubmit}>Создать</Button>
+        <AddTemplate onAdd={onAdd} />
+      </Stack>
     </Stack>
   )
 }

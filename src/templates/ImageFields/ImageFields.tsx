@@ -1,56 +1,52 @@
-import { nanoid } from "nanoid"
-import { useState } from "react"
+import { useState, type FC } from "react"
 import { useFormStore } from "../../shared/store/useFormStore"
-import { FieldBlockLayout } from "../../shared/ui/FieldBlockLayout"
-import { FieldLayout } from "../../shared/ui/FieldLayout"
+import { FieldBlockLayout } from "../../widgets/FieldBlockLayout"
+import { FieldLayout } from "../../widgets/FieldLayout"
+import type { FieldBlockProps } from "../../types/fieldBlockProps"
+import type { ImageContentType } from "./types"
+import { uuid } from "../../shared/utils/uuid"
+import { buildSaveBlockFunc } from "../../shared/utils"
 
-const ImageFields = () => {
-  const addBlock = useFormStore(s => s.addBlock)
+export const ImageFields: FC<FieldBlockProps> = ({ id }) => {
   const addImage = useFormStore(s => s.addImage)
-  const blocks = useFormStore()
-
   const [file, setFile] = useState<File | null>(null)
-  const [alt, setAlt] = useState("")
-  const [imageKey] = useState(() => nanoid())
+  const updateBlock = useFormStore((s) => s.updateBlock)
+  const block = useFormStore(
+    (s) => s.getBlockById(id) as ImageContentType
+  )
 
   const onImageChange = (selected: File | null) => {
     if (!selected) return
     setFile(selected)
   }
 
-  const handleSave = () => {
-    if (!file) return
-    addImage(imageKey, file)
-    addBlock({
-      type: "IMAGE",
-      data: {
-        source: {
-          alt
-        },
-        imageKey,
-      },
+  const handleSave = ({ styles }: { styles: string }) => {
+    if (!file || !block) return
+
+    const key = uuid()
+    addImage(key, file)
+
+    buildSaveBlockFunc({
+      block,
+      id,
+      styles,
+      updateBlock,
+      buildData: ({ trimmed, parsed }) => ({
+        source: "",
+        imageKey: key,
+        ...(trimmed && parsed.img && { styles: parsed.img }),
+      }),
     })
-    console.log(blocks);
-    
   }
 
   return (
-    <FieldBlockLayout title="Картинка" onSave={handleSave}>
+    <FieldBlockLayout title="Картинка" id={id} states={[file]} onSave={handleSave}>
       <FieldLayout
-        width={500}
+        width={600}
         type="image"
-        label="Обложка"
+        label="Картинки"
         onFileChange={onImageChange}
-      />
-
-      <FieldLayout
-        label="Описание картинки"
-        width={500}
-        value={alt}
-        onChange={(e) => setAlt(e.target.value)}
       />
     </FieldBlockLayout>
   )
 }
-
-export default ImageFields

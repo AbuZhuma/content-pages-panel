@@ -1,22 +1,33 @@
 import { create } from "zustand"
-import type { ContentType } from "../../../types/content.types"
+import { defaultFormState, type FormState } from "./types"
 
-type ImageFileMap = Record<string, File>
-
-export type FormState = {
-  blocks: ContentType[]
-  images: ImageFileMap
-  addBlock: (block: ContentType) => void
-  addImage: (key: string, file: File) => void
-  resetBlocks: () => void
-  removeLastBlock: () => void
-}
-
-export const useFormStore = create<FormState>((set) => ({
+export const useFormStore = create<FormState>((set, get) => ({
+  metaData: {
+    title: "",
+    description: "",
+    slug: "",
+    category: ""
+  },
   blocks: [],
   images: {},
   addBlock: (block) =>
     set((state) => ({ blocks: [...state.blocks, block] })),
+  updateBlock: (id, block) => {
+    const blocks = get().blocks.map((el) => {
+      if (el.id === id) {
+        return block
+      }
+      return el
+    })
+    set({ blocks: blocks })
+  },
+  getBlockById: (id) => {
+    return get().blocks.find((block) => block.id === id)
+  },
+  removeBlockById: (id) => {
+    const removed = get().blocks.filter(el => el.id !== id)
+    set({blocks: removed})
+  },
   addImage: (key, file) =>
     set((state) => ({
       images: {
@@ -24,7 +35,8 @@ export const useFormStore = create<FormState>((set) => ({
         [key]: file,
       },
     })),
-  resetBlocks: () => set({ blocks: [] }),
-  removeLastBlock: () =>
-    set((state) => ({ blocks: state.blocks.slice(0, -1) })),
+  clearForm: () => set(defaultFormState),
+  setMetadata: (data) => {
+    set({ metaData: data })
+  }
 }))

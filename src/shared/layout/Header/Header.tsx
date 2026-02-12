@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, Typography } from "@mui/material";
-import { useHeaderStore } from "../../store/header/header.store";
+import { useHeaderStore } from "../../store/useHeader/useHeader.store";
 
 export function Header() {
   const {title} = useHeaderStore()

@@ -4,14 +4,19 @@ import type { TextContentTypes } from "../templates/TextFields"
 import type { TitleContentType } from "../templates/TitleFields"
 
 export type BaseContentDataTemplate = {
-    styles?: string
+  styles?: string
 }
 
 export type BaseContentTemplate = {
-    type: ContentDataType
+  id: string,
+  type: ContentDataType
 }
 
-export type ContentDataType =   
+export type CategoryType =
+  | "FOOTER"
+  | "BLOG"
+
+export type ContentDataType =
   | "TITLE"
   | "TEXT"
   | "DROPDOWN"
@@ -22,3 +27,20 @@ export type ContentType =
   | TitleContentType
   | ImageContentType
   | DropdownContentType
+
+export const TemplatesMap: { type: ContentDataType; label: string }[] = [
+  { type: "TITLE", label: "Заголовок" },
+  { type: "TEXT", label: "Текст" },
+  { type: "DROPDOWN", label: "Выпадающий список" },
+  { type: "IMAGE", label: "Изображение" },
+];
+
+export const CategoryMap: { type: CategoryType, label: string }[] = [
+  { type: "BLOG", label: "Блог" },
+  { type: "FOOTER", label: "Подвал" }
+]
+
+export const CategorySet:Record<CategoryType, string> = {
+  "FOOTER": "Подвал",
+  "BLOG": "Блог"
+}
