@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { ContentType } from "../../types/content.types";
 
 export interface FieldBlockLayoutProps {
     title?: string,
@@ -6,5 +7,6 @@ export interface FieldBlockLayoutProps {
     onSave?: (data: {styles: string}) => void,
     states?: (string | File | null)[],
     isStyling?: boolean
-    id?: string
+    id?: string,
+    block?: ContentType
 }

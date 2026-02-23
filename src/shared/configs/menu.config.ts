@@ -9,16 +9,18 @@ export const menu = [
   },
   {
     label: "Создание страниц",
-    path: "/content-pages",
+    path: "/create",
     icon: PeopleIcon,
   }
 ]
 
 export type MenuMapKeys = 
   | "/"
-  | "/content-pages"
+  | "/create"
+  | "/edit"
 
 export const menuMap: Record<MenuMapKeys, { label: string }> = {
   "/": { label: "Главное" },
-  "/content-pages": { label: "Создание страниц" },
+  "/create": { label: "Создание страниц" },
+  "/edit": {label: "Изменение страницы"}
 };

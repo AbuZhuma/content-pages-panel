@@ -10,15 +10,6 @@ export const BLOCK_TEMPLATES: Record<ContentDataType, ContentType> = {
             }
         }
     },
-    "TITLE": {
-        id: "",
-        type: "TITLE",
-        data: {
-            text: {
-                text: ""
-            }
-        }
-    },
     "IMAGE": {
         id: "",
         type: "IMAGE",

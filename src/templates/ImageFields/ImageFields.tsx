@@ -1,4 +1,4 @@
-import { useState, type FC } from "react"
+import { useEffect, useState, type FC } from "react"
 import { useFormStore } from "../../shared/store/useFormStore"
 import { FieldBlockLayout } from "../../widgets/FieldBlockLayout"
 import { FieldLayout } from "../../widgets/FieldLayout"
@@ -6,6 +6,8 @@ import type { FieldBlockProps } from "../../types/fieldBlockProps"
 import type { ImageContentType } from "./types"
 import { uuid } from "../../shared/utils/uuid"
 import { buildSaveBlockFunc } from "../../shared/utils"
+import { urlToFile } from "../../shared/utils/urlToFile"
+import { API_URL } from "../../const/env"
 
 export const ImageFields: FC<FieldBlockProps> = ({ id }) => {
   const addImage = useFormStore(s => s.addImage)
@@ -39,12 +41,30 @@ export const ImageFields: FC<FieldBlockProps> = ({ id }) => {
     })
   }
 
+  useEffect(() => {
+    if (!block?.data?.source) return
+    
+    const loadImage = async () => {
+      try {
+        const fileFromUrl = await urlToFile(
+          API_URL + block.data.source
+        )
+        setFile(fileFromUrl)
+      } catch (e) {
+        console.error("Не удалось загрузить изображение", e)
+      }
+    }
+
+    loadImage()
+  }, [block?.data?.source])
+
   return (
-    <FieldBlockLayout title="Картинка" id={id} states={[file]} onSave={handleSave}>
+    <FieldBlockLayout block={block} title="Картинка" id={id} states={[file]} onSave={handleSave}>
       <FieldLayout
         width={600}
         type="image"
         label="Картинки"
+        file={file}
         onFileChange={onImageChange}
       />
     </FieldBlockLayout>

@@ -12,8 +12,13 @@ export const Checkers = () => {
   useEffect(() => {
     getStyles()
   }, [getStyles])
+
   useEffect(() => {
-    setTitle(menuMap[pathname as MenuMapKeys].label)
+    const pathn = menuMap[`/${pathname.split("/")[1]}` as MenuMapKeys]
+    if (pathn) {
+      setTitle(pathn.label)
+    }
   }, [setTitle, pathname])
+  
   return null
 }

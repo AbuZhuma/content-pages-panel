@@ -1,11 +1,11 @@
 import { api, type ApiError } from "../../shared/api/baseApi";
 import { defaultOnError, defaultOnSuccess, type ServiceBasicProps } from "../../types/servicesBasicProps";
-import type { CreatePageServiceProps } from "./types";
+import type { UpdatePageServiceProps } from "./types";
 
-export const createPage = async ({ data, onError }: ServiceBasicProps & CreatePageServiceProps) => {
+export const updatePage = async ({ data, slug, onError }: ServiceBasicProps & UpdatePageServiceProps) => {
   try {
-    const res = await api.post("/pages", data);
-    defaultOnSuccess("Page created!")
+    const res = await api.patch(`/pages/${slug}`, data);
+    defaultOnSuccess("Page updated!")
     return res;
   } catch (error: unknown) {
     const err = error as ApiError;

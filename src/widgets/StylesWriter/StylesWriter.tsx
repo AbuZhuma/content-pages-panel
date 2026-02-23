@@ -40,7 +40,7 @@ export const StyleEditor = ({ onChange, value, isOpen }: Props) => {
   }
 
   if (!isOpen) return null
-
+  
   return (
     <Stack spacing={2} width={600} onKeyDown={handleKeyDown}>
       <FieldLayout
@@ -50,7 +50,7 @@ export const StyleEditor = ({ onChange, value, isOpen }: Props) => {
         value={value}
         onChange={(e) => {
           onChange(e.target.value)
-          setActiveIndex(0) // сбрасываем при вводе
+          setActiveIndex(0) 
         }}
       />
 

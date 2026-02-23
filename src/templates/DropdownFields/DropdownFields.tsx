@@ -40,10 +40,11 @@ export const DropdownFields: FC<FieldBlockProps> = ({ id }) => {
       }),
     })
   }
-
+  
   if (!block) return null
+  
   return (
-    <FieldBlockLayout key={id} id={id} states={[heading, inner]} title="Выподашка" onSave={handleSave}>
+    <FieldBlockLayout block={block} key={id} id={id} states={[heading, inner]} title="Выподашка" onSave={handleSave}>
       <FieldLayout
         width={500}
         label="Заголовок"

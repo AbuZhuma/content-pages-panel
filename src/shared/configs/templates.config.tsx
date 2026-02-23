@@ -4,7 +4,6 @@ import { DropdownFields } from "../../templates/DropdownFields";
 import { TextFields } from "../../templates/TextFields";
 import type { FieldBlockProps } from "../../types/fieldBlockProps";
 import { ImageFields } from "../../templates/ImageFields";
-import { TitleFields } from "../../templates/TitleFields";
 
 
 export const templatesMap: Record<ContentDataType,{component: FC<FieldBlockProps> }> = {
@@ -16,8 +15,5 @@ export const templatesMap: Record<ContentDataType,{component: FC<FieldBlockProps
     },
     "TEXT": {
         component: TextFields
-    }, 
-    "TITLE": {
-        component: TitleFields
     }
 }

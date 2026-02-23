@@ -19,7 +19,7 @@ export type FormState = {
 }
 
 export const defaultFormState = {
-  blocks: [],
+  blocks: [], 
   images: {},
   metaData: {
     title: "",

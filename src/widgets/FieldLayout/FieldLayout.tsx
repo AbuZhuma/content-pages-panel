@@ -9,6 +9,7 @@ export const FieldLayout: FC<FieldLayoutProps> = ({
   minRows,
   maxRows,
   type,
+  file,
   preview = true,
   onFileChange,
   ...rest
@@ -25,7 +26,7 @@ export const FieldLayout: FC<FieldLayoutProps> = ({
     const file = e.target.files?.[0] ?? null
 
     onFileChange?.(file)
-      
+
     if (!file) {
       setImagePreview(null)
       return
@@ -34,7 +35,18 @@ export const FieldLayout: FC<FieldLayoutProps> = ({
     const url = URL.createObjectURL(file)
     setImagePreview(url)
   }
+  useEffect(() => {
+    if (!file) {
+      setImagePreview(null)
+      return
+    }
 
+    const url = URL.createObjectURL(file)
+    setImagePreview(url)
+
+    return () => URL.revokeObjectURL(url)
+  }, [])
+  
   if (type === "image") {
     return (
       <Box width={width} display="flex" flexDirection="column" gap={1}>

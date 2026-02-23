@@ -2,9 +2,11 @@ import { Typography, Stack, Button } from "@mui/material"
 import styles from "./styles.module.scss"
 import type { FC } from "react"
 import type { FieldBlockLayoutProps } from "./types"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { StyleEditor } from "../StylesWriter/StylesWriter"
 import { useFormStore } from "../../shared/store/useFormStore"
+import { extractStylesWithLines } from "../../shared/utils"
+import { useLocation } from "react-router-dom"
 
 export const FieldBlockLayout: FC<FieldBlockLayoutProps> = ({
   title = "",
@@ -12,17 +14,17 @@ export const FieldBlockLayout: FC<FieldBlockLayoutProps> = ({
   onSave,
   states = [],
   isStyling = true,
-  id
+  id,
+  block = null
 }) => {
   const [stylesValue, setStylesValue] = useState("")
   const [stylesOpen, setStylesOpen] = useState(false)
   const [lastSavedSnapshot, setLastSavedSnapshot] = useState("")
-
   const { removeBlockById } = useFormStore()
-
   const currentSnapshot = JSON.stringify([stylesValue, ...states])
-
   const isSaved = currentSnapshot === lastSavedSnapshot
+  const isStylesFetched = useRef(false)
+  const { pathname } = useLocation()
 
   const handleSave = () => {
     if (onSave) {
@@ -38,6 +40,22 @@ export const FieldBlockLayout: FC<FieldBlockLayoutProps> = ({
   const onClickRemove = useCallback(() => {
     if (id) removeBlockById(id)
   }, [removeBlockById, id])
+
+  useEffect(() => {
+    if (
+      block &&
+      !isStylesFetched.current &&
+      pathname.split("/")[1] === "edit"
+    ) {
+      const extracted = extractStylesWithLines(block)
+      
+      setStylesValue(extracted+" ")
+      setStylesOpen(true)
+
+      isStylesFetched.current = true
+      setLastSavedSnapshot(JSON.stringify([extracted, ...states]))
+    }
+  }, [block, pathname])
 
   return (
     <div className={styles.container}>

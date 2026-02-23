@@ -31,6 +31,7 @@ export const TextFields: FC<FieldBlockProps> = ({ id }) => {
 
   return (
     <FieldBlockLayout
+      block={block}
       title="Текст"
       key={id}
       id={id}
@@ -42,6 +43,7 @@ export const TextFields: FC<FieldBlockProps> = ({ id }) => {
         multiline
         width={900}
         value={value}
+        minRows={1}
         onChange={(e) => setValue(e.target.value)}
       />
     </FieldBlockLayout>
